@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scavenger2D</title>
+    
+    <style>
+        @font-face {
+            font-family: pressStart;
+            src: url(fonts/PressStart2P-Regular.ttf);
+        }
+        #screen, #title {
+            padding: 0;
+            margin: 0;
+            width:320px;
+            height:320px;
+            background-color:#464646;
+            position:relative;
+            color:#FFF;
+            font-size:16px;
+            font-family: pressStart, "Courier New", Courier, monospace;
+            letter-spacing:1px;
+            display: none;
+        }
+        #screen {
+            font-size:16px;
+            font-weight:bold;
+        }
+        #title {
+            text-align: center;
+        }
+        #title p {
+            margin: 0;
+            padding: 0;
+            top: 50%;
+            position: relative;
+        }
+        #score {
+            padding: 0;
+            margin: 0;
+            width:320px;
+            height: 320px;
+            color:#FFF;
+            font-size:12px;
+            font-family: pressStart, "Courier New", Courier, monospace;
+            position: relative;
+            text-align: right;
+            font-weight: normal;
+        }
+        #score p {
+            margin: 0;
+            padding: 0;
+            top: 297px;
+            right: 10px;
+            position: relative;
+        }
+    </style>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+</head>
+<body>
+    <div id="screen"></div>
+    <div id="title"></div>
+    
+    <script src="js/raf.js"></script>
+    <script src="js/Utils.js"></script>
+    <script src="js/Globals.js"></script>
+    <script src="js/Count.js"></script>
+    <script src="js/DHTMLSprite.js"></script>
+    <script src="js/BufferLoader.js"></script>
+    <script src="js/Entities.js"></script>
+    <script src="js/BoardManager.js"></script>
+    <script src="js/Main.js"></script>
+</body>
+</html>
