@@ -8,8 +8,10 @@ function css(el, props) {
     }
 }
 
-function create(id) {
-    return document.createElement("div");
+function create(type, id) {
+    var el = document.createElement(type);
+    if (id) el.setAttribute("id", id);
+    return el;
 }
 
 function remove(el) {
