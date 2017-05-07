@@ -271,6 +271,21 @@ function gameLoop() {
             break;
 
         case STATE_TITLE_SCREEN:
+            /*
+            https://developer.mozilla.org/en-US/docs/Web/API/Window/speechSynthesis
+            https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis
+            */
+            var synth = window.speechSynthesis;
+            setTimeout(function() {
+                var voices = synth.getVoices();
+                console.log(voices);
+                var utter = new SpeechSynthesisUtterance("Day " + level);
+                utter.voice = voices[1];  // 9 es graciosa
+                utter.pitch = 0.34;
+                utter.rate = 0.24;
+                synth.speak(utter);
+            }, 500);
+            
             title.innerHTML = "<p>DAY " + level + "</p>";
             screen.style.display = "none";
             title.style.display = "block";
