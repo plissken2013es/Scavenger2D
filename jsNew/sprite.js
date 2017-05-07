@@ -5,6 +5,11 @@ var DHTMLSprite = function (params) {
          el = params.t.appendChild(create("div")),
          st = el.style,
          mF = Math.floor,
+         anims = [],
+         canim = [],
+         dx = 0,
+         dy = 0,
+         ii = 0,
          ci = 0;
      css(el, {
          position: 'absolute', 
@@ -14,6 +19,16 @@ var DHTMLSprite = function (params) {
          backgroundImage: 'url(' + params.img + ')'
      });
      var that = {
+        log: function() {
+            console.log(w, h, iW, anims, canim, ii, ci);
+        },
+        diff: function(x, y) {
+            dx = x;
+            dy = y;
+        },
+        aA: function(animsArr) {
+            anims = animsArr;
+        },
         dw: function (x, y) {
             st.left = x + 'px';
             st.top = y + 'px';
@@ -29,8 +44,8 @@ var DHTMLSprite = function (params) {
             st.backgroundPosition = hOffset + 'px ' + vOffset + 'px';
         },
         cA: function(anim) {
-            if (that.anims[anim]) {
-                that.currentAnim = that.anims[anim];
+            if (anims[anim]) {
+                canim = anims[anim];
             }
         },
         i: function() {
@@ -44,6 +59,20 @@ var DHTMLSprite = function (params) {
         },
         k: function () {
             remove(el);
+        },
+        mv: function(dt, dir) {
+            if (!dt) return;
+            that.cI(ci + canim[mF(ii)]);
+            ii += dt/1000 * anims.v;
+            if (ii >= canim.length) {
+                ii = 0;
+            }
+        },
+        v: function() {
+            return anims.v;
+        },
+        dxy: function() {
+            return [dx/500, dy/500];
         }
      };
      return that;
