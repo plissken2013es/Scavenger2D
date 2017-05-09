@@ -8,7 +8,7 @@
     height: 100%;
     width: 0%;
     position: relative;
-    zoom: 1.5;
+    zoom: 1.0;
     image-rendering: pixelated;
 }
 #screen, #title {

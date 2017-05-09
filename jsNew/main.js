@@ -117,7 +117,8 @@ function layoutObjectsAtRandom(tiles, min, max, type, anims) {
 
             if (type !== "e") {
                 var t = [sprite, rndPos[0], rndPos[1], type]; // sprite, x, y, type, energy
-                if (type === "f") {
+                t[4] = 2; // in case is a wall
+                if (type === "f") { // FOOD
                     if (tileChoice === 19) {
                         t[4] = FRUIT_ENERGY;
                     } else {
@@ -125,7 +126,7 @@ function layoutObjectsAtRandom(tiles, min, max, type, anims) {
                     }
                 }
                 destArray.push(t);
-            } else {
+            } else { // ENEMIES
                 sprite.aA(anims);
                 sprite.cA("i");
                 var e = [sprite, rndPos[0], rndPos[1], type]; // sprite, x, y, type, hitPoints, viewRange
@@ -171,6 +172,17 @@ function attemptMove(char, dir) {
     return "y";
 };
 
+function damage(entity) {
+    entity[4] --;
+    console.log("wall life:", entity[4]);
+    if (entity[4] === 1) entity[0].cI(entity[0].i() + 31);
+    if (entity[4] <= 0) {
+        entity[3] = "r";
+        entity[0].k();
+        gameCallback(EVT_WALL_DESTROYED);
+    }
+}
+
 function doAnimate(char, dir) {
     console.log("doAnimate", char, dir);
     animating = true;
@@ -191,7 +203,7 @@ function doAnimate(char, dir) {
         }
         if (moveAttempt[3] === "w" && char[3] === "p") {
             endPlayerMove();
-            //moveAttempt.damage();
+            damage(moveAttempt);
             //gameSounds.playSound(randomRange(0, 1));  // player chop sound
         }
         char[0].cA("a");
