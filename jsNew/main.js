@@ -188,27 +188,25 @@ function doAnimate(char, dir) {
     animating = true;
 
     var moveAttempt = attemptMove(char, dir);
+    console.log("moveAttempt=", moveAttempt);
     if (moveAttempt === "n") {
+        endCharacterMove(char);
         return;
     } else if (moveAttempt[3] === "w" || moveAttempt[3] === "p") {
         if (moveAttempt[3] === "p") {
             moveAttempt[0].cA("d");
-            //gameCallback(EVT_PLAYER_DAMAGE, that.hitPoints);
+            gameCallback(EVT_PLAYER_DAMAGE, char[4]);
 
             //gameSounds.playSound(randomRange(3, 4)); // zombie attack sound
-
-            setTimeout(function() {
-                moveAttempt[0].cA("i");
-            }, 500);
         }
-        if (moveAttempt[3] === "w" && char[3] === "p") {
-            endPlayerMove();
+        if (moveAttempt[3] === "w") {
             damage(moveAttempt);
-            //gameSounds.playSound(randomRange(0, 1));  // player chop sound
+            //gameSounds.playSound(randomRange(0, 1));  // player (OR ZOMBIE) chop sound
         }
         char[0].cA("a");
         setTimeout(function() {
             char[0].cA("i");
+            endCharacterMove(char);
         }, 500);
         return;
     }
@@ -241,7 +239,7 @@ function doAnimate(char, dir) {
             }
             break;
     }
-    endPlayerMove(x, y);
+    endCharacterMove(char, x, y);
 }
 
 // RandomPosition returns a random position from our list gridPositions.
@@ -252,8 +250,41 @@ function randomPosition() {
     return randomPosition;
 };
 
+function decideMovement(enemy) {
+    // enemy [sprite, x, y, type, hitPoints, viewRange]
+    var options = ["l", "r", "u", "d"];
+    var distanceToPlayer = Math.abs(enemy[1] - player[1]) + Math.abs(enemy[2] - player[2]);
+    var decision = "";       
+
+    if (distanceToPlayer <= enemy[5]) {
+        if (enemy[2] > player[2]) {
+            decision = "u";
+        } else if (enemy[2] < player[2]) {
+            decision = "d";
+        } 
+        if (decision === "") {
+            if (enemy[1] > player[1]) {
+                decision = "l";
+            } else if (enemy[0] < player[0]) {
+                decision = "r";
+            }
+        }
+    } else { // random decision
+        decision = options[randomRange(0, options.length)];
+    }
+    console.log("enemy moves from", enemy[1], ",", enemy[2], "direction", decision);
+    doAnimate(enemy, decision);
+
+    setTimeout(function() {
+        /*x = (that.pos[0]+1)*SYS_spriteParams.width;
+        y = (that.pos[1]+1)*SYS_spriteParams.height;
+        that.draw(x, y);
+        animating = false;
+        gameCallback(EVT_ENEMY_ENDED_MOVE);*/
+    }, 500);
+}
+
 function gameLoop() {
-    console.log("tick " + gameState, "isPlayerMoving & turn", isPlayerMoving, isPlayerTurn);
     var newTime = +new Date();
     var elapsed = newTime - oldTime;
     oldTime = newTime;
@@ -271,10 +302,10 @@ function gameLoop() {
                 //checkGameOver();
                 handleKeys();
             } else if (!isPlayerTurn && !isEnemyMoving) {
-                //var enemy = enemiesToMove.pop();
+                var enemy = enemiesToMove.pop();
                 if (enemy) {
-                    //enemy.decideMovement([world.player], world.objects.concat(world.enemies));
-                    //isEnemyMoving = true;
+                    decideMovement(enemy);
+                    isEnemyMoving = true;
                 } else {
                     isPlayerTurn = true;
                 }
@@ -290,11 +321,18 @@ function gameLoop() {
             var synth = window.speechSynthesis;
             setTimeout(function() {
                 var voices = synth.getVoices();
+                var selected = 0;
+                voices.forEach(function(v, i) {
+                    if (v.lang.indexOf("en") >= 0 && v.name == "Google UK English Male") {
+                        console.log(i, v);
+                        selected = i;
+                    }
+                });
                 console.log(voices);
-                var utter = new SpeechSynthesisUtterance("Day " + level);
-                utter.voice = voices[1];  // 9 es graciosa
-                utter.pitch = 0.34;
-                utter.rate = 0.24;
+                var utter = new SpeechSynthesisUtterance("Day " + level + ". Scavenge for survival.");
+                utter.voice = voices[selected];  // 9 es graciosa
+                utter.pitch = 0.5;
+                utter.rate = 0.8;
                 synth.speak(utter);
             }, 500);
             
@@ -347,7 +385,7 @@ function gameCallback(msg) {
                     gameState = STATE_TITLE_SCREEN;
                 }, 1000);
             } else { */                       
-                //isPlayerTurn = false;
+                isPlayerTurn = false;
                 isPlayerMoving = false;
                 enemiesToMove = enemies.slice(0);
             //}
@@ -380,6 +418,15 @@ function updateLoop(dt) {
         player[1] += diff[0] * dt;
         player[2] += diff[1] * dt;
     }
+    
+    enemies.forEach(function(e) {
+        e[0].mv(dt);
+        if (animating) {
+            var diff = e[0].dxy();
+            e[1] += diff[0] * dt;
+            e[2] += diff[1] * dt;
+        }
+    });
 }
 
 function handleKeys() {
@@ -397,13 +444,18 @@ function handleKeys() {
     }
 }
 
-function endPlayerMove(x, y) {
+function endCharacterMove(char, x, y) {
+    console.log("endCharacterMove type=", char[3], "pos=", x,y);
     setTimeout(function() {
         animating = false;
-        player[0].diff(0, 0);
-        if(x) player[1] = x;
-        if(y) player[2] = y;
-        gameCallback(EVT_PLAYER_ENDED_MOVE);
+        char[0].diff(0, 0);
+        if(x) char[1] = x;
+        if(y) char[2] = y;
+        if (char[3] == "p") {
+            gameCallback(EVT_PLAYER_ENDED_MOVE);
+        } else {
+            gameCallback(EVT_ENEMY_ENDED_MOVE);
+        }
     }, 500);
 }
 
