@@ -146,30 +146,31 @@ function layoutObjectsAtRandom(tiles, min, max, type, anims) {
 
 function attemptMove(char, dir) {
     var destX = char[1];
-    if (dir === "r") {
+    if (dir == "r") {
         destX++;
     }
-    if (dir === "l") {
+    if (dir == "l") {
         destX--;
     }
     var destY = char[2];
-    if (dir === "u") {
+    if (dir == "u") {
         destY--;
     }
-    if (dir === "d") {
+    if (dir == "d") {
         destY++;
     }
 
     for (var i=0; i<enemies.length; i++) {
-        if (enemies[i][1] === destX && enemies[i][2] === destY && enemies[i][3] !== "f") {
+        if (enemies[i][1] == destX && enemies[i][2] == destY && enemies[i][3] !== "f") {
             return "n";
         }
     }
     for (var i=0; i<objects.length; i++) {
-        if (objects[i][1] === destX && objects[i][2] === destY) {
+        if (objects[i][1] == destX && objects[i][2] == destY) {
             return objects[i];
         }
     }
+    if (player[1] == destX && player[2] == destY) return player;
     //gameSounds.playSound(randomRange(5, 6)); // footsteps
     return "y";
 };
@@ -177,7 +178,7 @@ function attemptMove(char, dir) {
 function damage(entity) {
     entity[4] --;
     console.log("wall life:", entity[4]);
-    if (entity[4] === 1) entity[0].cI(entity[0].i() + 31);
+    if (entity[4] == 1) entity[0].cI(entity[0].i() + 31);
     if (entity[4] <= 0) {
         entity[3] = "r";
         entity[0].k();
@@ -190,7 +191,7 @@ function doAnimate(char, dir) {
     animating = true;
 
     var moveAttempt = attemptMove(char, dir);
-    console.log("moveAttempt=", moveAttempt);
+    console.log("moveAttempt=", moveAttempt, "wall?", moveAttempt[3] === "w", "player", moveAttempt[3] === "p");
     if (moveAttempt === "n") {
         endCharacterMove(char);
         return;
@@ -198,6 +199,7 @@ function doAnimate(char, dir) {
         if (moveAttempt[3] === "p") {
             moveAttempt[0].cA("d");
             gameCallback(EVT_PLAYER_DAMAGE, char[4]);
+            var forcePlayerIdle = true;
 
             //gameSounds.playSound(randomRange(3, 4)); // zombie attack sound
         }
@@ -208,6 +210,7 @@ function doAnimate(char, dir) {
         char[0].cA("a");
         setTimeout(function() {
             char[0].cA("i");
+            if (forcePlayerIdle) moveAttempt[0].cA("i");
             endCharacterMove(char);
         }, 500);
         return;
