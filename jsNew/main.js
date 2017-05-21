@@ -211,7 +211,6 @@ function doAnimate(char, dir) {
         return;
     }
 
-    var v = char[0].v();
     var x = char[1], y = char[2];
     switch (dir) {
         case "l":
@@ -265,7 +264,7 @@ function decideMovement(enemy) {
         if (decision === "") {
             if (enemy[1] > player[1]) {
                 decision = "l";
-            } else if (enemy[0] < player[0]) {
+            } else if (enemy[1] < player[1]) {
                 decision = "r";
             }
         }
@@ -274,14 +273,26 @@ function decideMovement(enemy) {
     }
     console.log("enemy moves from", enemy[1], ",", enemy[2], "direction", decision);
     doAnimate(enemy, decision);
+}
 
-    setTimeout(function() {
-        /*x = (that.pos[0]+1)*SYS_spriteParams.width;
-        y = (that.pos[1]+1)*SYS_spriteParams.height;
-        that.draw(x, y);
-        animating = false;
-        gameCallback(EVT_ENEMY_ENDED_MOVE);*/
-    }, 500);
+function checkCurrentTile() {
+    objects.forEach(function(obj, i) {
+        // sprite, x, y, "f" (type), energy
+        if (obj[1] === player[1] && obj[2] === player[2]) {
+            currentEnergy += obj[4];
+            if (obj[4] > FRUIT_ENERGY) {
+                //gameSounds.playSound(randomRange(7, 8));
+            } else {
+                //gameSounds.playSound(randomRange(10, 11));
+            }
+            objects.splice(i, 1);
+            obj[0].k();
+            return false;
+        }
+    });
+    if (player[1] === columns-1 && player[2] === 0) {
+        return true;
+    }
 }
 
 function gameLoop() {
@@ -341,6 +352,7 @@ function gameLoop() {
             title.style.display = "block";
             gameState = STATE_STANDBY;
             setTimeout(function() {
+                //init();
                 screen.style.display = "block";
                 title.style.display = "none";
                 gameState = STATE_PLAYING;
@@ -351,7 +363,7 @@ function gameLoop() {
             break;
 
         case STATE_GAMEOVER:
-            title.innerHTML = "<p>You died of starvation <br />after " + currentLevel + " days.</p>";
+            title.innerHTML = "<p>You died of starvation <br />after " + level + " days.</p>";
             screen.style.display = "none";
             title.style.display = "block";
             gameState = STATE_STANDBY;
@@ -375,20 +387,22 @@ function gameCallback(msg) {
             console.log("player ended move");
             currentEnergy--;
 
-/*            var isExit = checkCurrentTile(world.player.pos);
+            var isExit = checkCurrentTile();
+            console.log("isExit", isExit);
 
             if (isExit) {
                 isPlayerTurn = true;
                 isPlayerMoving = true;
                 setTimeout(function() {
-                    currentLevel++;
+                    level++;
                     gameState = STATE_TITLE_SCREEN;
                 }, 1000);
-            } else { */                       
+            } else {                        
                 isPlayerTurn = false;
                 isPlayerMoving = false;
                 enemiesToMove = enemies.slice(0);
-            //}
+            }
+            score.update();
             break;
 
         case EVT_ENEMY_ENDED_MOVE:
@@ -397,6 +411,7 @@ function gameCallback(msg) {
 
         case EVT_PLAYER_DAMAGE: 
             currentEnergy -= arguments[1];
+            score.update();
             break;
 
         case EVT_WALL_DESTROYED:
@@ -445,12 +460,14 @@ function handleKeys() {
 }
 
 function endCharacterMove(char, x, y) {
-    console.log("endCharacterMove type=", char[3], "pos=", x,y);
+    console.log("endCharacterMove type=", char[3], "pos=", x | char[1], y | char[2]);
     setTimeout(function() {
         animating = false;
         char[0].diff(0, 0);
         if(x) char[1] = x;
         if(y) char[2] = y;
+        char[1] = rd(char[1]);
+        char[2] = rd(char[2]);
         if (char[3] == "p") {
             gameCallback(EVT_PLAYER_ENDED_MOVE);
         } else {
