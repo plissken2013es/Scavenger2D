@@ -37,7 +37,9 @@ function init() {
     object = [];
     var childs = $("screen").children;
     for (x=0, l=childs.length;x<l; x++) {
-        childs[x].parentNode.removeChild(childs[x]);        
+        if (childs[x] && childs[x].parentNode) {
+            childs[x].parentNode.removeChild(childs[x]);
+        }
     }
     
     // Generate random background tiles
@@ -352,7 +354,7 @@ function gameLoop() {
             title.style.display = "block";
             gameState = STATE_STANDBY;
             setTimeout(function() {
-                //init();
+                init();
                 screen.style.display = "block";
                 title.style.display = "none";
                 gameState = STATE_PLAYING;
@@ -392,7 +394,7 @@ function gameCallback(msg) {
 
             if (isExit) {
                 isPlayerTurn = true;
-                isPlayerMoving = true;
+                isPlayerMoving = false;
                 setTimeout(function() {
                     level++;
                     gameState = STATE_TITLE_SCREEN;

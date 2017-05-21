@@ -45,7 +45,7 @@
     color:#FFF;
     font-size:12px;
     font-family: pressStart, "Courier New", Courier, monospace;
-    position: relative;
+    position: absolute;
     text-align: right;
     font-weight: normal;
 }
