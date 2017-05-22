@@ -27,6 +27,7 @@ var SYS_spriteParams = {
 
 function init() {
     // Clears our list gridPositions and prepares it to generate a new board.
+    gridPositions = [];
     for (var x = 1; x < columns-1; x++) {
         for (var y = 1; y < rows -1; y++) {
             gridPositions.push([x, y]);
