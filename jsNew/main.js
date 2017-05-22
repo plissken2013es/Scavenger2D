@@ -16,6 +16,23 @@ const storyline = [
     "More than I thought."
 ];
 
+const categories = [
+    "Burguer meat",
+    "Zombie fodder",
+    "Novice",
+    "Inexperienced",
+    "Second rate",
+    "Poor mediocre",
+    "Handy",
+    "Skilled",
+    "Old timer",
+    "Veteran",
+    "Seasoned pro",
+    "Superb",
+    "Outstanding",
+    "Master"
+];
+
 var SYS_spriteParams = {
         w: 32,
         h: 32,
@@ -370,6 +387,8 @@ function gameLoop() {
             /*
             https://developer.mozilla.org/en-US/docs/Web/API/Window/speechSynthesis
             https://developer.mozilla.org/en-US/docs/Web/API/SpeechSynthesis
+            
+            https://twitter.com/intent/tweet?url=http%3A%2F%2Fmydomain%2F%3Fparam1%3Dsomething%26param2%3Dsomtehing%26param3%3Dsomething&text=hola%20caracola
             */
             var synth = window.speechSynthesis;
             setTimeout(function() {
@@ -405,7 +424,10 @@ function gameLoop() {
             break;
 
         case STATE_GAMEOVER:
-            title.innerHTML = "<p>You DIED</p><p class='small'>of starvation after " + level + " days.</p>";
+            var score = (level/5) | 0, l = categories.length;
+            var outcome = (score >= l) ?  categories[l-1] : categories[score] || categories[0];
+            var twTxt = "I died of starvation after " + level + " days of zombie apocalypse. I am a " + outcome + " scavenger.";
+            title.innerHTML = "<p>You DIED</p><p class='small'>of starvation after " + level + " days.<br/>You scored as<br/>"+outcome+" scavenger.<br/><a href='https://twitter.com/intent/tweet?url=http%3A%2F%2Fmydomain%2F%3Fparam1%3Dsomething%26param2%3Dsomtehing%26param3%3Dsomething&text=" + twTxt + "' target='_blank'>TWEET IT!</a></p>";
             screen.style.display = "none";
             title.style.display = "block";
             gameState = STATE_STANDBY;
