@@ -12,14 +12,14 @@ var SYS_spriteParams = {
         w: 32,
         h: 32,
         iW: 256,
-        img: "sprites/spr.png",
+        img: "sprites/Scavengers_SpriteSheet_v1.png",
         t: $("screen")
     },
     columns = 8, rows = 8, level = 2, screen, score, title, oldTime,
     floorTiles = [32, 33, 34, 35, 36, 37, 38, 39], wallTiles = [25, 26, 27, 28, 29, 30],
     outerWallTiles = [21, 22, 23, 24], foodTiles = [18, 19],
     enemyTiles = [6, 12], enemyHit = [25, 35], enemyAI = [3, 5],
-    board = [], objects = [], enemies = [], gridPositions = [], player, enemiesToMove = [],
+    board = [], objects = [], enemies = [], gridPositions = [], player, detection, enemiesToMove = [],
     initialEnergy = 25, currentEnergy = 25,
     isPlayerMoving = false, isPlayerTurn = true, isEnemyMoving = false, animating = false,
     gameState = STATE_INITIALIZATION,
@@ -104,6 +104,18 @@ function init() {
 
 function drawItem(t) {
     t[0].dw((t[1]+1)*SYS_spriteParams.w, (t[2]+1)*SYS_spriteParams.h);
+}
+
+function launchDetectIcon() {
+    var spr = DHTMLSprite(SYS_spriteParams);
+    spr.bI(63);
+    spr.aA({i: [64, 56], v: 8});
+    spr.cA("i");
+    detection = [spr, player[1]+.5, player[2]-.5, "!"];
+    setTimeout(function() {
+        detection[0].k();
+        detection = null;
+    }, 1000);
 }
 
 // LayoutObjectAtRandom accepts an array of game objects to choose from 
@@ -263,6 +275,7 @@ function decideMovement(enemy) {
     var decision = "";       
 
     if (distanceToPlayer <= enemy[5]) {
+        launchDetectIcon();
         if (enemy[2] > player[2]) {
             decision = "u";
         } else if (enemy[2] < player[2]) {
@@ -449,6 +462,8 @@ function updateLoop(dt) {
             e[2] += diff[1] * dt;
         }
     });
+    
+    if (detection) detection[0].mv(dt);
 }
 
 function handleKeys() {
@@ -488,6 +503,7 @@ function drawLoop() {
     objects.forEach(drawItem); // draw walls and food
     enemies.forEach(drawItem); // draw enemies
     drawItem(player); // draw player
+    if (detection) drawItem(detection); // draw detection icon
 }
 
 var keys = [0, 0, 0, 0];
