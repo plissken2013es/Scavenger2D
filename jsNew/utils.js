@@ -2,6 +2,10 @@ function randomRange(min, max) {
     return Math.floor(Math.random() * (max-min)) + min;
 }
 
+function pause(f, d) {
+    setTimeout(f, d);
+}
+
 function rd(value) {
     return Math.round(value);
 }
