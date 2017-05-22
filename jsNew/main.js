@@ -29,7 +29,7 @@ var SYS_spriteParams = {
     enemyTiles = [6, 12], enemyHit = [25, 35], enemyAI = [3, 5],
     board = [], objects = [], enemies = [], gridPositions = [], player, detection, enemiesToMove = [],
     initialEnergy = 25, currentEnergy = 25,
-    isPlayerMoving = false, isPlayerTurn = true, isEnemyMoving = false, animating = false,
+    isPlayerMoving = false, isPlayerTurn = true, isEnemyMoving = false, animating = false, gameIsOver = false,
     gameState = STATE_INITIALIZATION,
     FRUIT_ENERGY = 15, SODA_ENERGY = 30;
 
@@ -283,7 +283,7 @@ function decideMovement(enemy) {
     var decision = "";       
 
     if (distanceToPlayer <= enemy[5]) {
-        launchDetectIcon();
+        if (!detection) launchDetectIcon();
         if (enemy[2] > player[2]) {
             decision = "u";
         } else if (enemy[2] < player[2]) {
@@ -323,13 +323,21 @@ function checkCurrentTile() {
     }
 }
 
+function checkGameOver() {
+    if (currentEnergy <= 0) {
+        gameIsOver = true;
+        gameState = STATE_GAMEOVER;
+    }
+}
+
 function gameLoop() {
     var newTime = +new Date();
     var elapsed = newTime - oldTime;
     oldTime = newTime;
     
     switch (gameState) {
-        case STATE_INITIALIZATION:                            
+        case STATE_INITIALIZATION: 
+            gameIsOver = false;
             currentEnergy = initialEnergy;
             level = INIT_LEVEL;
             init();
@@ -338,7 +346,7 @@ function gameLoop() {
 
         case STATE_PLAYING:
             if (isPlayerTurn && !isPlayerMoving) {
-                //checkGameOver();
+                checkGameOver();
                 handleKeys();
             } else if (!isPlayerTurn && !isEnemyMoving) {
                 var enemy = enemiesToMove.pop();
@@ -391,13 +399,10 @@ function gameLoop() {
             break;
 
         case STATE_GAMEOVER:
-            title.innerHTML = "<p>You died of starvation <br />after " + level + " days.</p>";
+            title.innerHTML = "<p>You DIED</p><p class='small'>of starvation after " + level + " days.</p>";
             screen.style.display = "none";
             title.style.display = "block";
             gameState = STATE_STANDBY;
-            setTimeout(function() {
-                gameState = STATE_INITIALIZATION;
-            }, 3500);
     }
     
     updateLoop(elapsed);
@@ -522,6 +527,9 @@ document.onkeyup = document.onkeydown = function (e) {
         keys[code] = 0;
     } else {
         keys[code] = 1;
+    }
+    if (gameIsOver) {
+        gameState = STATE_INITIALIZATION;
     }
 }
 
