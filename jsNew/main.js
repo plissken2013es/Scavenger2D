@@ -6,7 +6,15 @@ const EVT_PLAYER_ENDED_MOVE     = 0,
       STATE_INITIALIZATION      = 5,
       EVT_PLAYER_DAMAGE         = 6,
       STATE_GAMEOVER            = 7,
-      EVT_WALL_DESTROYED        = 8;
+      EVT_WALL_DESTROYED        = 8,
+      INIT_LEVEL                = 5;
+
+const storyline = [
+    "Scavenge for survival.",
+    "Oops. You are not alone.",
+    "I hate Zetas.",
+    "More than I thought."
+];
 
 var SYS_spriteParams = {
         w: 32,
@@ -323,7 +331,7 @@ function gameLoop() {
     switch (gameState) {
         case STATE_INITIALIZATION:                            
             currentEnergy = initialEnergy;
-            level = 2;
+            level = INIT_LEVEL;
             init();
             gameState = STATE_TITLE_SCREEN;
             break;
@@ -360,14 +368,14 @@ function gameLoop() {
                     }
                 });
                 console.log(voices);
-                var utter = new SpeechSynthesisUtterance("Day " + level + ". Scavenge for survival.");
+                var utter = new SpeechSynthesisUtterance("Day " + level + ". " + (storyline[level-1] || ""));
                 utter.voice = voices[selected];  // 9 es graciosa
                 utter.pitch = 0.5;
                 utter.rate = 0.8;
                 synth.speak(utter);
             }, 500);
             
-            title.innerHTML = "<p>DAY " + level + "</p>";
+            title.innerHTML = "<p>DAY " + level + ".</p><p class='small'>"+(storyline[level-1] || "")+"</p>";
             screen.style.display = "none";
             title.style.display = "block";
             gameState = STATE_STANDBY;

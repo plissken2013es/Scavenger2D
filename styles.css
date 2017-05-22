@@ -37,6 +37,10 @@
     top: 50%;
     position: relative;
 }
+.small {
+    font-size: 10px;
+    line-height: 45px;
+}
 #score {
     padding: 0;
     margin: 0;
