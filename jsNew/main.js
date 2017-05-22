@@ -29,7 +29,8 @@ var SYS_spriteParams = {
     enemyTiles = [6, 12], enemyHit = [25, 35], enemyAI = [3, 5],
     board = [], objects = [], enemies = [], gridPositions = [], player, detection, enemiesToMove = [],
     initialEnergy = 25, currentEnergy = 25,
-    isPlayerMoving = false, isPlayerTurn = true, isEnemyMoving = false, animating = false, gameIsOver = false,
+    isPlayerMoving = false, isPlayerTurn = true, isPlayerDetectedBy = null,
+    isEnemyMoving = false, animating = false, gameIsOver = false,
     gameState = STATE_INITIALIZATION,
     FRUIT_ENERGY = 15, SODA_ENERGY = 30;
 
@@ -280,10 +281,13 @@ function decideMovement(enemy) {
     // enemy [sprite, x, y, type, hitPoints, viewRange]
     var options = ["l", "r", "u", "d"];
     var distanceToPlayer = Math.abs(enemy[1] - player[1]) + Math.abs(enemy[2] - player[2]);
-    var decision = "";       
+    var decision = ""; 
 
     if (distanceToPlayer <= enemy[5]) {
-        if (!detection) launchDetectIcon();
+        if (!detection && !isPlayerDetectedBy) {
+            isPlayerDetectedBy = enemy;
+            launchDetectIcon();
+        }
         if (enemy[2] > player[2]) {
             decision = "u";
         } else if (enemy[2] < player[2]) {
@@ -298,6 +302,7 @@ function decideMovement(enemy) {
         }
     } else { // random decision
         decision = options[randomRange(0, options.length)];
+        if (isPlayerDetectedBy == enemy) isPlayerDetectedBy = null;
     }
     console.log("enemy moves from", enemy[1], ",", enemy[2], "direction", decision);
     doAnimate(enemy, decision);
@@ -338,6 +343,7 @@ function gameLoop() {
     switch (gameState) {
         case STATE_INITIALIZATION: 
             gameIsOver = false;
+            isPlayerDetectedBy = null;
             currentEnergy = initialEnergy;
             level = INIT_LEVEL;
             init();
@@ -426,6 +432,7 @@ function gameCallback(msg) {
             if (isExit) {
                 isPlayerTurn = true;
                 isPlayerMoving = false;
+                isPlayerDetectedBy = null;
                 setTimeout(function() {
                     level++;
                     gameState = STATE_TITLE_SCREEN;
