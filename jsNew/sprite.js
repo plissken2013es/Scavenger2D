@@ -19,9 +19,6 @@ var DHTMLSprite = function (params) {
          backgroundImage: 'url(' + params.img + ')'
      });
      var that = {
-        log: function() {
-            console.log(w, h, iW, anims, canim, ii, ci);
-        },
         diff: function(x, y) {
             dx = x;
             dy = y;

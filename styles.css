@@ -2,6 +2,7 @@
     font-family: pressStart;
     src: url(fonts/PressStart2P-Regular.ttf);
 }
+body{font-family:"Lucida Console", Monaco, monospace}
 #wrapper {
     margin: 0 -15%;
     padding: 0 50%;
@@ -19,8 +20,7 @@
     background-color:#464646;
     position:relative;
     color:#FFF;
-    font-size:16px;
-    font-family: pressStart, "Courier New", Courier, monospace;
+    font-size:22px;
     letter-spacing:1px;
     display: none;
 }
@@ -38,7 +38,7 @@
     position: relative;
 }
 .small {
-    font-size: 10px;
+    font-size: 16px;
     line-height: 30px;
 }
 #score {
@@ -47,8 +47,7 @@
     width:320px;
     height: 320px;
     color:#FFF;
-    font-size:12px;
-    font-family: pressStart, "Courier New", Courier, monospace;
+    font-size:16px;
     position: absolute;
     text-align: right;
     font-weight: normal;
