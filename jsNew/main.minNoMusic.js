@@ -1,3 +1,4 @@
+;(function(){
 /**
  * SfxrParams
  *
@@ -1176,3 +1177,4 @@ pause(function() {
     initSound();
 }, 500);
 gameLoop();
+})()
