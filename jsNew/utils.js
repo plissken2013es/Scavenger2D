@@ -3,7 +3,7 @@ function randomRange(min, max) {
 }
 
 function pause(f, d) {
-    setTimeout(f, d);
+    setTimeout(f.bind(this), d);
 }
 
 function rd(value) {

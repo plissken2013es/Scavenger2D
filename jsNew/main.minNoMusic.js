@@ -1,4 +1,3 @@
-;(function() {
 /**
  * SfxrParams
  *
@@ -481,7 +480,6 @@ window['jsfxr'] = function(settings) {
   }
   return output;
 }
-
 function randomRange(min, max) {
     return Math.floor(Math.random() * (max-min)) + min;
 }
@@ -512,9 +510,7 @@ function remove(el) {
 
 function $(id) {
     return document.getElementById(id);
-}
-
-var DHTMLSprite = function (params) {
+}var DHTMLSprite = function (params) {
      var w = params.w,
          h = params.h,
          iW = params.iW,
@@ -589,9 +585,7 @@ var DHTMLSprite = function (params) {
         }
      };
      return that;
-};
-
-const EVT_PLAYER_ENDED_MOVE     = 0,
+};const EVT_PLAYER_ENDED_MOVE     = 0,
       EVT_ENEMY_ENDED_MOVE      = 1,
       STATE_TITLE_SCREEN        = 2,
       STATE_PLAYING             = 3,
@@ -636,7 +630,7 @@ var SYS_spriteParams = {
         w: 32,
         h: 32,
         iW: 256,
-        img: "sprites/Scavengers_SpriteSheet_v1.png",
+        img: "img/s.png",
         t: $("screen")
     },
     columns = 8, rows = 8, level = 2, screen, score, title, oldTime,
@@ -656,8 +650,7 @@ var sounds = [
     [3,0.14,0.31,0.0939,0.47,0.03,0.0071,-0.1999,0.34,0.24,0.0685,-0.28,,0.0233,-0.0799,,0.0104,0.4403,0.27,0.02,0.21,0.12,-0.18,0.32], // 1 - zombie attack
     [3,,0.35,0.53,0.2582,0.1909,,0.2963,,,,,,,,,0.3,-0.0396,1,,,,,0.32], // 2 - wall attack
     [0,,0.0878,,0.4572,0.2507,,0.2093,,0.1437,0.3611,,,0.5666,,,,,1,,,,,0.32], // 3 - food
-    //[0,0.3587,0.2605,0.33,0.64,,,0.1232,0.1466,0.24,0.8722,0.9299,,-0.1595,-0.06,0.74,,-0.5,0.5,0.04,,,-0.56,0.32], // 4 - walk
-    [0,0.34,0.26,0.24,0.23,,,0.1232,0.1466,0.24,1,0.9299,,,-1,1,-0.8,-0.04,0.33,-0.02,,,-1,0.32],
+    [0,0.34,0.26,0.24,0.23,,,0.1232,0.1466,0.24,1,0.9299,,,-1,1,-0.8,-0.04,0.33,-0.02,,,-1,0.32], // 4 - walk
     [3,0.0171,0.9078,0.3427,0.4125,0.5181,0.0587,-0.1099,0.484,0.0317,0.4421,-0.4199,0.5661,0.049,0.0066,0.2124,-0.8404,-0.1955,0.3985,-0.0415,,0.0212,-0.0439,0.32] // 5 - exit level
 ];
 
@@ -1183,4 +1176,3 @@ pause(function() {
     initSound();
 }, 500);
 gameLoop();
-})();
