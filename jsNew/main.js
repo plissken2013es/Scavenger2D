@@ -265,6 +265,11 @@ function doAnimate(char, dir) {
             soundLib[1].play();
         }
         if (moveAttempt[3] === "w") {
+            var r = randomRange(1, 4);
+            if (isPlayerDetectedBy != char && r < 2) {
+                endCharacterMove(char);
+                return;
+            }
             damage(moveAttempt);
             soundLib[2].play();
         }
