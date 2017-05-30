@@ -7,7 +7,7 @@ const EVT_PLAYER_ENDED_MOVE     = 0,
       EVT_PLAYER_DAMAGE         = 6,
       STATE_GAMEOVER            = 7,
       EVT_WALL_DESTROYED        = 8,
-      INIT_LEVEL                = 1;
+      INIT_LEVEL                = 5;
 
 const storyline = [
     "Scavenge for survival",
@@ -43,11 +43,11 @@ var SYS_spriteParams = {
         w: 32,
         h: 32,
         iW: 256,
-        img: "sprites/Scavengers_SpriteSheet_v1.png",
+        img: "s3.png",
         t: $("screen")
     },
     columns = 8, rows = 8, level = 2, screen, score, title, oldTime,
-    floorTiles = [32, 33, 34, 35, 36, 37, 38, 39], wallTiles = [25, 26, 27, 28, 29, 30],
+    floorTiles = [31], wallTiles = [25, 26, 27, 28, 29, 30],
     outerWallTiles = [21, 22, 23, 24], foodTiles = [18, 19],
     enemyTiles = [6, 12], enemyHit = [20, 30], enemyAI = [3, 4],
     board = [], objects = [], enemies = [], gridPositions = [], player, detection, enemiesToMove = [],
@@ -124,7 +124,7 @@ function init() {
     var enemyCount = Math.log2(level) | 0;
     var enemyAnims = {
         i:  [0, 1, 2, 3, 4, 5],
-        a:  [36, 37],
+        a:  [28, 29], // 24, 25
         v:  4
     };
     enemies = layoutObjectsAtRandom(enemyTiles, enemyCount, enemyCount, "e", enemyAnims);
@@ -133,8 +133,8 @@ function init() {
     playerSprite.cI(0);
     playerSprite.aA({
         i: [0, 1, 2, 3, 4, 5],
-        a: [40, 41],
-        d: [46, 47],
+        a: [32, 33],
+        d: [38, 39],
         v: 6
     });
     playerSprite.cA("i");
@@ -158,8 +158,8 @@ function drawItem(t) {
 
 function launchDetectIcon() {
     var spr = DHTMLSprite(SYS_spriteParams);
-    spr.bI(63);
-    spr.aA({i: [64, 56], v: 8});
+    spr.bI(46);
+    spr.aA({i: [1, 0], v: 8});
     spr.cA("i");
     detection = [spr, player[1]+.5, player[2]-.5, "!"];
     pause(function() {
@@ -194,6 +194,7 @@ function layoutObjectsAtRandom(tiles, min, max, type, anims) {
                 }
                 destArray.push(t);
             } else { // ENEMIES
+                if (tileChoice === 12) anims.a = [24, 25]; // patch for new spritesheet
                 sprite.aA(anims);
                 sprite.cA("i");
                 var e = [sprite, rndPos[0], rndPos[1], type]; // sprite, x, y, type, hitPoints, viewRange
@@ -241,7 +242,7 @@ function attemptMove(char, dir) {
 
 function damage(entity) {
     entity[4] --;
-    if (entity[4] == 1) entity[0].cI(entity[0].i() + 31);
+    if (entity[4] == 1) entity[0].cI(entity[0].i() + 15);
     if (entity[4] <= 0) {
         entity[3] = "r";
         entity[0].k();

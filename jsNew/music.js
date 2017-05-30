@@ -36,7 +36,7 @@ function playSong() {
         audio.play();
     });
 }
-playSong();
+//playSong();
 
 /*var audioCtx = new AudioContext();
 audioCtx.onstatechange = function() {
