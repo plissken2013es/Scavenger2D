@@ -81,7 +81,7 @@ function init() {
     gridPositions = [];
     for (var x = 1; x < columns-1; x++) {
         for (var y = 1; y < rows -1; y++) {
-            if ((x == 1 && y == 6) || (x == 1 && y == 7)) continue;
+            if (((x == 1 || x == 2) && y == 6) || ((x == 1 || x == 2) && y == 7) || ((x == 0 || x == 1 || x == 2) && y == 5)) continue;
             gridPositions.push([x, y]);
         }
     }
