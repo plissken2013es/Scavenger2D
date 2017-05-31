@@ -210,7 +210,9 @@ sonantx.AudioGenerator.prototype.getAudioBuffer = function(callBack) {
                 return;
             }
         }
-        setTimeout(function() {callBack(buffer);}, 0);
+        setTimeout(function() {
+            callBack(buffer);
+        }, 0);
     };
     setTimeout(iterate, 0);
 };

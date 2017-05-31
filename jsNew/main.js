@@ -7,6 +7,7 @@ const EVT_PLAYER_ENDED_MOVE     = 0,
       EVT_PLAYER_DAMAGE         = 6,
       STATE_GAMEOVER            = 7,
       EVT_WALL_DESTROYED        = 8,
+      STATE_INIT_MUSIC          = 9,
       INIT_LEVEL                = 1;
 
 const storyline = [
@@ -54,9 +55,10 @@ var SYS_spriteParams = {
     initialEnergy = 25, currentEnergy, maxEnergy,
     isPlayerMoving = false, isPlayerTurn = true, isPlayerDetectedBy = null,
     isEnemyMoving = false, animating = false, gameIsOver = false,
-    gameState = STATE_INITIALIZATION,
+    gameState = STATE_INIT_MUSIC,
     FRUIT_ENERGY = 12, SODA_ENERGY = 20,
-    soundLib = [];
+    soundLib = [],
+    raf = window.requestAnimationFrame;
 
 var sounds = [
     [2,0.0266,0.5034,0.5728,0.5999,0.5026,,-0.0108,-0.4073,,,,,0.543,0.7178,0.7558,,0.9082,0.9809,0.1312,-0.4545,0.0055,0.0025,0.4], // 0 - detection
@@ -392,6 +394,14 @@ function gameLoop() {
     oldTime = newTime;
     
     switch (gameState) {
+        case STATE_INIT_MUSIC:
+            title.innerHTML = "<p>ROGUE SCAVENGER 13K</p>";
+            screen.style.display = "none";
+            title.style.display = "block";
+            raf(gameLoop);
+            return;
+            break;
+            
         case STATE_INITIALIZATION: 
             gameIsOver = false;
             isPlayerDetectedBy = null;
@@ -470,7 +480,7 @@ function gameLoop() {
     updateLoop(elapsed);
     drawLoop();
     
-    requestAnimFrame(gameLoop);
+    raf(gameLoop);
 }
 
 function gameCallback(msg) {
@@ -596,7 +606,7 @@ document.onkeyup = document.onkeydown = function (e) {
         keys[code] = 1;
     }
     if (gameIsOver) {
-        gameState = STATE_INITIALIZATION;
+        pause(gameState = STATE_INITIALIZATION, 1000);
     }
 }
 
