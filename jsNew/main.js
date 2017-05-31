@@ -194,11 +194,12 @@ function layoutObjectsAtRandom(tiles, min, max, type, anims) {
                 }
                 destArray.push(t);
             } else { // ENEMIES
-                if (tileChoice === 12) anims.a = [24, 25]; // patch for new spritesheet
-                sprite.aA(anims);
+                var ans = Object.assign({}, anims);
+                if (tileChoice == 12) ans.a = [24, 25]; // patch for new spritesheet
+                sprite.aA(ans);
                 sprite.cA("i");
                 var e = [sprite, rndPos[0], rndPos[1], type]; // sprite, x, y, type, hitPoints, viewRange
-                if (tileChoice === 6 || tileChoice === 12) {
+                if (tileChoice == 6 || tileChoice == 12) {
                     e[4] = enemyHit[choice];
                     e[5]= enemyAI[choice];
                 }
