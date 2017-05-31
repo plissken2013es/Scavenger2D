@@ -581,12 +581,17 @@ function drawLoop() {
     if (detection) drawItem(detection); // draw detection icon
 }
 
+function switchMusic() {
+    gainNode.gain.value = gainNode.gain.value == -1 ? -.84 : -1;
+}
+
 var keys = [0, 0, 0, 0];
 document.onkeyup = document.onkeydown = function (e) {
     e.preventDefault();
     var code = e.keyCode-37;
     if (e.type == "keyup") {
         keys[code] = 0;
+        if (code == 40) switchMusic();
     } else {
         keys[code] = 1;
     }
