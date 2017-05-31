@@ -7,7 +7,7 @@ const EVT_PLAYER_ENDED_MOVE     = 0,
       EVT_PLAYER_DAMAGE         = 6,
       STATE_GAMEOVER            = 7,
       EVT_WALL_DESTROYED        = 8,
-      INIT_LEVEL                = 5;
+      INIT_LEVEL                = 1;
 
 const storyline = [
     "Scavenge for survival",
@@ -51,7 +51,7 @@ var SYS_spriteParams = {
     outerWallTiles = [21, 22, 23, 24], foodTiles = [18, 19],
     enemyTiles = [6, 12], enemyHit = [20, 30], enemyAI = [3, 4],
     board = [], objects = [], enemies = [], gridPositions = [], player, detection, enemiesToMove = [],
-    initialEnergy = 25, currentEnergy = 25,
+    initialEnergy = 25, currentEnergy, maxEnergy,
     isPlayerMoving = false, isPlayerTurn = true, isPlayerDetectedBy = null,
     isEnemyMoving = false, animating = false, gameIsOver = false,
     gameState = STATE_INITIALIZATION,
@@ -375,6 +375,10 @@ function checkCurrentTile() {
     }
 }
 
+function checkMaxEnergy() {
+    if (maxEnergy < currentEnergy) maxEnergy = currentEnergy;
+}
+
 function checkGameOver() {
     if (currentEnergy <= 0) {
         gameIsOver = true;
@@ -391,7 +395,7 @@ function gameLoop() {
         case STATE_INITIALIZATION: 
             gameIsOver = false;
             isPlayerDetectedBy = null;
-            currentEnergy = initialEnergy;
+            currentEnergy = maxEnergy = initialEnergy;
             level = INIT_LEVEL;
             init();
             gameState = STATE_TITLE_SCREEN;
@@ -399,6 +403,7 @@ function gameLoop() {
 
         case STATE_PLAYING:
             if (isPlayerTurn && !isPlayerMoving) {
+                checkMaxEnergy();
                 checkGameOver();
                 handleKeys();
             } else if (!isPlayerTurn && !isEnemyMoving) {
@@ -456,7 +461,7 @@ function gameLoop() {
         case STATE_GAMEOVER:
             var outcome = (level >= l) ?  categories[l-1] : categories[level] || categories[0];
             var twTxt = "I died of starvation after " + level + " days of zombie apocalypse. I am a " + outcome + " scavenger.";
-            title.innerHTML = "<p>You DIED</p><p class='small'>of starvation after " + level + " days.<br/>You scored as<br/>"+outcome+" scavenger.<br/><a href='https://twitter.com/intent/tweet?url=http%3A%2F%2Fmydomain%2F%3Fparam1%3Dsomething%26param2%3Dsomtehing%26param3%3Dsomething&text=" + twTxt + "' target='_blank'>TWEET IT!</a></p>";
+            title.innerHTML = "<p>You DIED</p><p class='small'>of starvation after " + level + " days.<br/>You managed to have " + maxEnergy + " food.<br/>You scored as<br/>"+outcome+" scavenger.<br/><a href='https://twitter.com/intent/tweet?url=http%3A%2F%2Fmydomain%2F%3Fparam1%3Dsomething%26param2%3Dsomtehing%26param3%3Dsomething&text=" + twTxt + "' target='_blank'>TWEET IT!</a></p>";
             screen.style.display = "none";
             title.style.display = "block";
             gameState = STATE_STANDBY;
