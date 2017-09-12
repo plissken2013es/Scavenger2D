@@ -1,3 +1,35 @@
+function randomRange(min, max) {
+    return Math.floor(Math.random() * (max-min)) + min;
+}
+
+function pause(f, d) {
+    setTimeout(f.bind(this), d);
+}
+
+function rd(value) {
+    return Math.round(value);
+}
+
+function css(el, props) {
+    for (var p in props) {
+        el.style[p] = props[p];
+    }
+}
+
+function create(type, id) {
+    var el = document.createElement(type);
+    if (id) el.setAttribute("id", id);
+    return el;
+}
+
+function remove(el) {
+    el.parentNode.removeChild(el);
+}
+
+function $(id) {
+    return document.getElementById(id);
+}
+
 const EVT_PLAYER_ENDED_MOVE     = 0,
       EVT_ENEMY_ENDED_MOVE      = 1,
       STATE_TITLE_SCREEN        = 2,
@@ -9,6 +41,83 @@ const EVT_PLAYER_ENDED_MOVE     = 0,
       EVT_WALL_DESTROYED        = 8,
       STATE_INIT_MUSIC          = 9,
       INIT_LEVEL                = 1;
+
+var DHTMLSprite = function (params) {
+     var w = params.w,
+         h = params.h,
+         iW = params.iW,
+         el = params.t.appendChild(create("div")),
+         st = el.style,
+         mF = Math.floor,
+         anims = [],
+         canim = [],
+         dx = 0,
+         dy = 0,
+         ii = 0,
+         ci = 0;
+     css(el, {
+         position: 'absolute', 
+         left: "-9999px", /*********************/
+         width: w+"px",
+         height: h+"px",
+         backgroundImage: 'url(' + params.img + ')'
+     });
+     var that = {
+        diff: function(x, y) {
+            dx = x;
+            dy = y;
+        },
+        aA: function(animsArr) {
+            anims = animsArr;
+        },
+        dw: function (x, y) {
+            st.left = x + 'px';
+            st.top = y + 'px';
+        },
+        bI: function(index) {
+            ci = index;
+            that.cI(ci);
+        },
+        cI: function (index) {
+            index *= w;
+            var vOffset = -mF(index / iW) * h;
+            var hOffset = -index % iW;
+            st.backgroundPosition = hOffset + 'px ' + vOffset + 'px';
+        },
+        cA: function(anim) {
+            if (anims[anim]) {
+                canim = anims[anim];
+            }
+        },
+        i: function() {
+            return ci;
+        },
+        sh: function () {
+            st.display = 'block';
+        },
+        hi: function () {
+            st.display = 'none';
+        },
+        k: function () {
+            remove(el);
+        },
+        mv: function(dt, dir) {
+            if (!dt) return;
+            that.cI(ci + canim[mF(ii)]);
+            ii += dt/1000 * anims.v;
+            if (ii >= canim.length) {
+                ii = 0;
+            }
+        },
+        v: function() {
+            return anims.v;
+        },
+        dxy: function() {
+            return [dx/500, dy/500];
+        }
+     };
+     return that;
+};
 
 const storyline = [
     "Scavenge for survival",
@@ -471,7 +580,7 @@ function gameLoop() {
         case STATE_GAMEOVER:
             var outcome = (level >= l) ?  categories[l-1] : categories[level] || categories[0];
             var twTxt = "I died of starvation after " + level + " days of zombie apocalypse. I am a " + outcome + " scavenger.";
-            title.innerHTML = "<p>You DIED</p><p class='small'>of starvation after " + level + " days.<br/>You managed to have " + maxEnergy + " food.<br/>You scored as<br/>"+outcome+" scavenger.<br/><a href='https://twitter.com/intent/tweet?url=http%3A%2F%2Fmydomain%2F%3Fparam1%3Dsomething%26param2%3Dsomtehing%26param3%3Dsomething&text=" + twTxt + "' target='_blank'>TWEET IT!</a></p>";
+            title.innerHTML = "<p>You DIED</p><p class='small'>of starvation after " + level + " days.<br/>You managed to have " + maxEnergy + " food.<br/>"+outcome+" scavenger.<br/><a href='https://twitter.com/intent/tweet?url=http://www.js13kgames.com/rogue-scavenger13k&text=#js13k #scavenger13k " + twTxt + "' target='_blank'>TWEET IT!</a></p>";
             screen.style.display = "none";
             title.style.display = "block";
             gameState = STATE_STANDBY;
