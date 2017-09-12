@@ -614,5 +614,6 @@ title = $("title");
 screen = $("screen");
 pause(function() {
     initSound();
+    gameState = STATE_INITIALIZATION;
 }, 500);
 gameLoop();

@@ -1,4 +1,6 @@
 Closure compiler (SIMPLE¿?): https://closure-compiler.appspot.com/
 RegPack (AudioContext - Encapsulate with MATH - 1 0 0): http://siorki.github.io/regPack.html
 
+https://jmperezperez.com/js-crusher/
+
 advzip -a build.zip indexMin.html min.js s2.png -4 -i 333
